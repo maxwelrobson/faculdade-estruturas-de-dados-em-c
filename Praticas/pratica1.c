@@ -61,9 +61,9 @@ int main() {
                 printf("Digite o nome da editora: ");
                 fgets(biblioteca[totalLivros].editora, TAM_STRING, stdin);
 
-                biblioteca[totalLivros].nome[strcspn(biblioteca[totalLivros].nome, "\n")];
-                biblioteca[totalLivros].autor[strcspn(biblioteca[totalLivros].autor, "\n")];
-                biblioteca[totalLivros].editora[strcspn(biblioteca[totalLivros].editora, "\n")];
+                biblioteca[totalLivros].nome[strcspn(biblioteca[totalLivros].nome, "\n")] = '\0';
+                biblioteca[totalLivros].autor[strcspn(biblioteca[totalLivros].autor, "\n")] = '\0';
+                biblioteca[totalLivros].editora[strcspn(biblioteca[totalLivros].editora, "\n")] = '\0';
 
                 printf("Digite a edicao: ");
                 scanf("%d", &biblioteca[totalLivros].edicao);
