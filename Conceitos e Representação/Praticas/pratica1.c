@@ -22,21 +22,16 @@ struct Emprestimo {
     char nomeUsuario[TAM_STRING];
 };
 
-//Função para limpar o buffer de entrada
-void limparBufferEntrada() {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
-}
+// - Prótótipos das funções
+void limparBufferEntrada();
+void exibirMenu();
 
 //Função Principal
 
 int main() {
-    struct Livro *biblioteca;
-    struct Emprestimo *emprestimos;
+    struct Livro *biblioteca = (struct Livro *)calloc(MAX_LIVROS, sizeof(struct Livro));
+    struct Emprestimo *emprestimos = (struct Emprestimo *)malloc(MAX_EMPRESTIMOS * sizeof(struct Emprestimo));
 
-    biblioteca = (struct Livro *)calloc(MAX_LIVROS, sizeof(struct Livro));
-
-    emprestimos = (struct Emprestimo *)malloc(MAX_EMPRESTIMOS * sizeof(struct Emprestimo));
 
     if (biblioteca == NULL || emprestimos == NULL) {
         printf("Erro: Falha ao alocar memoria.\n");
@@ -44,24 +39,13 @@ int main() {
     }
     
 
-    int totalLivros = 0;
+    int indice = 0;
     int totalEmprestimos = 0;
     int opcao;
 
-    // Laço principal do menu
-    do
-    {
-        printf("=======================================\n");
-        printf(" BIBLIOTECA - PARTE 1\n");
-        printf("=======================================\n");
-        printf("1 - Cadastrar novo livro\n");
-        printf("2 - Listar todos os livros\n");
-        printf("3 - Realizar emprestimo\n");
-        printf("4 - Listar emprestimos\n");
-        printf("0 - Sair\n");
-        printf("=======================================\n");
-        printf("Escolha uma opcao: ");
-
+    
+    do {
+        exibirMenu();
         // Lê a opção do usuário    
         scanf("%d", &opcao);
         limparBufferEntrada();  //Limpa o '\n' deixado pelo scanf.
@@ -70,46 +54,17 @@ int main() {
         switch (opcao)
         {
         case 1:
-            printf("Cadastro de novo livro\n");
-
-            if (totalLivros < MAX_LIVROS)
-            {
-                printf("Digite o nome do livro: ");
-                fgets(biblioteca[totalLivros].nome, TAM_STRING, stdin);
-
-                printf("Digite o nome do autor: ");
-                fgets(biblioteca[totalLivros].autor, TAM_STRING, stdin);
-
-                printf("Digite o nome da editora: ");
-                fgets(biblioteca[totalLivros].editora, TAM_STRING, stdin);
-
-                biblioteca[totalLivros].nome[strcspn(biblioteca[totalLivros].nome, "\n")] = '\0';
-                biblioteca[totalLivros].autor[strcspn(biblioteca[totalLivros].autor, "\n")] = '\0';
-                biblioteca[totalLivros].editora[strcspn(biblioteca[totalLivros].editora, "\n")] = '\0';
-
-                printf("Digite a edicao: ");
-                scanf("%d", &biblioteca[totalLivros].edicao);
-                limparBufferEntrada();
-
-                // Ao cadastrar, o livro automaticamente se torna disponível.
-                biblioteca[totalLivros].disponivel = 1;
-
-                totalLivros++;
-
-                printf("\nLivro cadastrado com sucesso\n");
-            } else {
-                printf("Biblioteca cheia! Nao e possivel cadastrar mais livros\n");
-            }
+            cadastrarLivro(biblioteca, &totalLivros);
             break;
 
             case 2:
                 printf("Lista de Livros cadastrados\n\n");
 
-                if (totalLivros == 0)
+                if (indice == 0)
                 {
                     printf("Nenhum livro cadastrado ainda.\n");
                 } else {
-                    for (int i = 0; i < totalLivros; i++)
+                    for (int i = 0; i < indice; i++)
                     {
                         printf("---------------------------\n");
                         printf("LIVRO %d\n", i + 1);
@@ -136,7 +91,7 @@ int main() {
                 } else {
                     printf("Livros disponiveis:\n");
                     int disponiveis = 0;
-                    for (int i = 0; i < totalLivros; i++)
+                    for (int i = 0; i < indice; i++)
                     {
                         if (biblioteca[i].disponivel)
                         {
@@ -156,7 +111,7 @@ int main() {
 
                         int indice = numLivro - 1;
 
-                        if (indice >= 0 && indice < totalLivros && biblioteca[indice].disponivel)
+                        if (indice >= 0 && indice < indice && biblioteca[indice].disponivel)
                         {
                             printf("Digite o nome do usuario que esta pegando o livro: ");
                             fgets(emprestimos[totalEmprestimos].nomeUsuario, TAM_STRING, stdin);
@@ -221,3 +176,56 @@ int main() {
 
     return 0;
 }
+
+void limparBufferEntrada() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
+void exibirMenu() {
+    printf("=======================================\n");
+    printf(" BIBLIOTECA - PARTE 1\n");
+    printf("=======================================\n");
+    printf("1 - Cadastrar novo livro\n");
+    printf("2 - Listar todos os livros\n");
+    printf("3 - Realizar emprestimo\n");
+    printf("4 - Listar emprestimos\n");
+    printf("0 - Sair\n");
+    printf("=======================================\n");
+    printf("Escolha uma opcao: ");
+}
+
+void cadastrarLivro (struct Livro *biblioteca, int *totalLivros) {
+    printf("Cadastro de novo livro\n");
+
+            if (*totalLivros < MAX_LIVROS){
+                int indice = *totalLivros;
+
+                printf("Digite o nome do livro: ");
+                fgets(biblioteca[indice].nome, TAM_STRING, stdin);
+
+                printf("Digite o nome do autor: ");
+                fgets(biblioteca[indice].autor, TAM_STRING, stdin);
+
+                printf("Digite o nome da editora: ");
+                fgets(biblioteca[indice].editora, TAM_STRING, stdin);
+
+                biblioteca[indice].nome[strcspn(biblioteca[indice].nome, "\n")] = '\0';
+                biblioteca[indice].autor[strcspn(biblioteca[indice].autor, "\n")] = '\0';
+                biblioteca[indice].editora[strcspn(biblioteca[indice].editora, "\n")] = '\0';
+
+                printf("Digite a edicao: ");
+                scanf("%d", &biblioteca[indice].edicao);
+                limparBufferEntrada();
+
+                // Ao cadastrar, o livro automaticamente se torna disponível.
+                biblioteca[indice].disponivel = 1;
+
+                indice++;
+
+                printf("\nLivro cadastrado com sucesso\n");
+            } else {
+                printf("Biblioteca cheia! Nao e possivel cadastrar mais livros\n");
+            }
+}
+
