@@ -27,3 +27,18 @@ void removerDoInicio(struct No** inicio) {
     *inicio = (*inicio)->proximo;
     free(noParaRemover);
 }
+
+// Percorre a lista a partir do nó inicial e imprime o dado de cada nó.
+void listar(struct No* inicio) {
+
+    if (atual == NULL) {   
+    printf("A lista está vazia.\n");    
+    return;
+    }
+
+    struct No* atual = inicio;
+    while (atual != NULL) {
+        printf("%d\n", atual->dado);
+        atual = atual->proximo;
+    }
+}
